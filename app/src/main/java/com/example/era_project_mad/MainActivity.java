@@ -15,8 +15,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -62,14 +65,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 922 && resultCode==RESULT_OK)
         {
             ArrayList<String> commands = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String raw = commands.get(o).toString();
+            String raw = commands.get(0);
             String[] arrSplit = raw.split("");
                 if (arrSplit[0].equals("insert"))
                 {
                     if (arrSplit.length == 3)
                        t1.setText(arrSplit[1]+arrSplit[2]);
                     else
-                        t1.setText(arrSplit[1].toString());
+                        t1.setText(arrSplit[1]);
                     FirebaseDatabase.getInstance().getReference("commandsRecords").push().setValue(t1.getText().toString());
                     Toast.makeText(getApplicationContext(), "Inserted to Firebase", Toast.LENGTH_LONG).show();
                 }
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     DatabaseReference dr = FirebaseDatabase.getInstance().getReference("commandsRecords");
                     dr.addValueEventListener(new ValueEventListener(){
                         @Override
-                        public void onDataChange(@NonNull DataSnapShot snapShot){
+                        public void onDataChange(@NonNull DataSnapshot snapShot){
                                 for(DataSnapshot ds: snapShot.getChildren()){
                                     tv.append(ds.getValue(String.class)+ "\n");
                                 }
