@@ -10,8 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -55,17 +65,73 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 922 && resultCode == RESULT_OK) {
+        if (requestCode == 922 && resultCode == RESULT_OK)
+        {
             ArrayList<String> commands = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            String raw = commands.get(0);
-            if (raw.equals("open camera")) {
+            String raw = commands.get(0).toString();
+            String[] arrSplit = raw.split("");
+
+            //insert
+            if (arrSplit[0].equals("insert"))
+            {
+                if (arrSplit.length==3)
+                {
+                    t1.setText(arrSplit[1] + arrSplit[2]);
+                }
+                else
+                {
+                    t1.setText(arrSplit[1].toString());
+                }
+                FirebaseDatabase.getInstance().getReference("commandsrecords").push().setValue(t1.getText().toString());
+                Toast.makeText(getApplicationContext(), "Record inserted to firebase database", Toast.LENGTH_SHORT).show();
+            }
+
+            //fetch
+            if (arrSplit[0].equals("fetch"))
+            {
+                tv.setText("");
+                DatabaseReference dr = FirebaseDatabase.getInstance().getReference("commandsrecords");
+                dr.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot ds: snapshot.getChildren())
+                        {
+                            tv.append(ds.getValue(String.class) + "\n");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            //Delete
+            if (arrSplit[0].equals("clear"))
+            {
+                t1.setText("");
+                tv.setText("");
+            }
+            if(arrSplit[0].equals("hello"))
+            {
+                t1.setText("Hello Sir");
+            }
+            //Update
+
+
+
+
+            //for camera
+           /* if (raw.equals("open camera"))
+            {
 
                 if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                     startActivity(intent);
                 } else
                     Toast.makeText(getApplicationContext(), "No camera permission given", Toast.LENGTH_LONG).show();
-            }
+            }*/
 
         }
     }
