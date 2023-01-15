@@ -41,11 +41,30 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         int MY_CAMERA_REQUEST_CODE = 100;
+        int MY_READ_CONTACTS_REQUEST_CODE=200;
+        int MY_CALL_REQUEST_CODE=300;
+        int MY_READ_CALL_LOGS_REQUEST_CODE = 300;
+        int MY_WRITE_CALENDER_REQUEST_CODE=400;
+        int MY_READ_CALENDER_REQUEST_CODE =500;
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }
-
+        if (checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, MY_READ_CONTACTS_REQUEST_CODE);
+        }
+        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, MY_CALL_REQUEST_CODE);
+        }
+        if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG}, MY_READ_CALL_LOGS_REQUEST_CODE);
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_CALENDAR}, MY_WRITE_CALENDER_REQUEST_CODE);
+        }
+        if (checkSelfPermission(Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CALENDAR}, MY_READ_CALENDER_REQUEST_CODE);
+        }
 
         btnStart.setOnClickListener(view -> startprocess());
     }
@@ -71,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             String raw = commands.get(0).toString();
             String[] arrSplit = raw.split("");
 
+            /*
             //insert
             if (arrSplit[0].equals("insert"))
             {
@@ -118,12 +138,12 @@ public class MainActivity extends AppCompatActivity {
                 t1.setText("Hello Sir");
             }
             //Update
-
+            */
 
 
 
             //for camera
-           /* if (raw.equals("open camera"))
+            if (raw.equals("open camera"))
             {
 
                 if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -131,8 +151,57 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 } else
                     Toast.makeText(getApplicationContext(), "No camera permission given", Toast.LENGTH_LONG).show();
-            }*/
+            }
+            //for read contacts
+            if (raw.equals("read contacts"))
+            {
 
+                if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent("android.action.READ_CONTACTS");
+                    startActivity(intent);
+                } else
+                    Toast.makeText(getApplicationContext(), "No camera permission given", Toast.LENGTH_LONG).show();
+            }
+            //for make a call
+            if (raw.equals("make a call"))
+            {
+
+                if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent("android.action.CALL_PHONE");
+                    startActivity(intent);
+                } else
+                    Toast.makeText(getApplicationContext(), "No calls permission given", Toast.LENGTH_LONG).show();
+            }
+            //for my call logs
+            if (raw.equals("show my call logs"))
+            {
+
+                if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent("android.action.READ_CALL_LOG");
+                    startActivity(intent);
+                } else
+                    Toast.makeText(getApplicationContext(), "No read call logs permission given", Toast.LENGTH_LONG).show();
+            }
+            //for schedule calender
+            if (raw.equals("schedule a date"))
+            {
+
+                if (checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent("android.action.WRITE_CALENDAR");
+                    startActivity(intent);
+                } else
+                    Toast.makeText(getApplicationContext(), "No write calender permission given", Toast.LENGTH_LONG).show();
+            }
+            //for read schedule calender
+            if (raw.equals("show my schedule"))
+            {
+
+                if (checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent("android.action.READ_CALENDAR");
+                    startActivity(intent);
+                } else
+                    Toast.makeText(getApplicationContext(), "No read calender permission given", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
