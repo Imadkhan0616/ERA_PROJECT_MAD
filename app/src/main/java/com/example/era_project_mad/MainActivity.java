@@ -3,6 +3,7 @@ package com.example.era_project_mad;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.WindowManager;
@@ -15,13 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/*
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+*/
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -35,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        t1 = findViewById(R.id.t1);
-        tv = findViewById(R.id.tv);
+        tv = findViewById(R.id.txt_HMIHY);
         btnStart = findViewById(R.id.btn_start);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -157,18 +158,21 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent("android.action.READ_CONTACTS");
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
                     startActivity(intent);
                 } else
-                    Toast.makeText(getApplicationContext(), "No camera permission given", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "No contact reading permission given", Toast.LENGTH_LONG).show();
             }
             //for make a call
             if (raw.equals("make a call"))
             {
-
+                String number=t1.getText().toString();
                 if (checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent("android.action.CALL_PHONE");
-                    startActivity(intent);
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel" + number));
+                    startActivity(callIntent);
                 } else
                     Toast.makeText(getApplicationContext(), "No calls permission given", Toast.LENGTH_LONG).show();
             }
@@ -177,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent("android.action.READ_CALL_LOG");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("content://call_log/calls"));
                     startActivity(intent);
                 } else
                     Toast.makeText(getApplicationContext(), "No read call logs permission given", Toast.LENGTH_LONG).show();
