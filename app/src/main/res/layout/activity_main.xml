@@ -11,14 +11,14 @@
         android:id="@+id/bg_era"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/bg_era"
-        />
+        android:src="@drawable/bg_era" />
     <TextView
         android:id="@+id/txt_HMIHY"
         android:layout_below="@+id/bg_era"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="How May I Help You?"
+        android:layout_marginLeft="10dp"
         android:textSize="40dp"
         android:textColor="@color/white"/>
 
@@ -42,6 +42,8 @@
         android:layout_marginLeft="160dp"
         android:backgroundTint="@color/black"
         android:textColor="@color/white"
+        android:layout_marginTop="50dp"
+        android:shadowColor="@color/white"
         android:text="era"/>
 
 

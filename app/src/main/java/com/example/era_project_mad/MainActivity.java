@@ -24,7 +24,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 */
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     EditText t1;
     TextView tv;
     Button btnStart;
+    private File item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         int MY_READ_CALL_LOGS_REQUEST_CODE = 300;
         int MY_WRITE_CALENDER_REQUEST_CODE=400;
         int MY_READ_CALENDER_REQUEST_CODE =500;
+        int MY_READ_FILES_REQUEST_CODE=600;
+
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
@@ -66,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CALENDAR}, MY_READ_CALENDER_REQUEST_CODE);
         }
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CALENDAR}, MY_READ_FILES_REQUEST_CODE);
+        }
+
 
         btnStart.setOnClickListener(view -> startprocess());
     }
@@ -153,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 } else
                     Toast.makeText(getApplicationContext(), "No camera permission given", Toast.LENGTH_LONG).show();
             }
+
             //for read contacts
             if (raw.equals("read contacts"))
             {
@@ -173,7 +183,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
                     callIntent.setData(Uri.parse("tel" + number));
                     startActivity(callIntent);
-                } else
+                }
+                else
                     Toast.makeText(getApplicationContext(), "No calls permission given", Toast.LENGTH_LONG).show();
             }
             //for my call logs
@@ -191,7 +202,14 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 if (checkSelfPermission(Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent("android.action.WRITE_CALENDAR");
+                    Calendar cal = Calendar.getInstance();
+                    Intent intent = new Intent(Intent.ACTION_EDIT);
+                    intent.setType("vnd.android.cursor.item/event");
+                    intent.putExtra("beginTime", cal.getTimeInMillis());
+                    intent.putExtra("allDay", true);
+                    intent.putExtra("rrule", "FREQ=YEARLY");
+                    intent.putExtra("endTime", cal.getTimeInMillis()+60*60*1000);
+                    intent.putExtra("title", "A Test Event from android app");
                     startActivity(intent);
                 } else
                     Toast.makeText(getApplicationContext(), "No write calender permission given", Toast.LENGTH_LONG).show();
@@ -201,11 +219,27 @@ public class MainActivity extends AppCompatActivity {
             {
 
                 if (checkSelfPermission(Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-                    Intent intent = new Intent("android.action.READ_CALENDAR");
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
                     startActivity(intent);
-                } else
-                    Toast.makeText(getApplicationContext(), "No read calender permission given", Toast.LENGTH_LONG).show();
+                }
+                else
+                Toast.makeText(getApplicationContext(), "No read calender permission given", Toast.LENGTH_LONG).show();
             }
+            //for read files
+             if (raw.equals("show reports"))
+            {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    Intent myIntent = new Intent(Intent.ACTION_VIEW);
+                    myIntent.setData(Uri.fromFile(item));
+                    Intent j = Intent.createChooser(myIntent, "Choose an application to open with:");
+                    startActivity(j);
+                }
+                else
+                Toast.makeText(getApplicationContext(), "No read calender permission given", Toast.LENGTH_LONG).show();
+            }
+
+
+
         }
     }
 }
